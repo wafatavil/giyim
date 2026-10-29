@@ -24,7 +24,8 @@ const allowedOrigins = new Set(
 );
 const isAllowedOrigin = (origin) =>
   allowedOrigins.has(origin) ||
-  (process.env.NODE_ENV !== "production" && /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin));
+  (process.env.NODE_ENV !== "production" && /^http:\/\/(localhost|127\.0\.0\.1|\[::1\]):\d+$/.test(origin)) ||
+  (process.env.NODE_ENV !== "production" && /^http:\/\/(10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}):\d+$/.test(origin));
 
 app.use((request, response, next) => {
   const origin = request.get("Origin");
