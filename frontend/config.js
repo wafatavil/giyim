@@ -1,3 +1,4 @@
-// Set this to the deployed backend's /api URL when the API is hosted.
-// Leave empty for the static GitHub Pages storefront or local development.
+// Public GitHub Pages needs the separately deployed backend URL, for example:
+// window.MODA_API_URL = "https://your-api.example.com/api";
+// Local development uses the current computer/network host on port 3000.
 window.MODA_API_URL = "";

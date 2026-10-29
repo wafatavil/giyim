@@ -1,16 +1,29 @@
-const authLocalApiHost = ["localhost", "127.0.0.1"].includes(window.location.hostname)
-  ? window.location.hostname
-  : "localhost";
-const authApiBaseUrl = (window.MODA_API_URL || `http://${authLocalApiHost}:3000/api`).replace(/\/$/, "");
+const authPageHost = window.location.hostname;
+const authIsLocalHost = ["localhost", "127.0.0.1", "::1"].includes(authPageHost)
+  || /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(authPageHost);
+const authApiBaseUrl = window.MODA_API_URL
+  ? window.MODA_API_URL.replace(/\/$/, "")
+  : authIsLocalHost
+    ? `http://${authPageHost}:3000/api`
+    : "";
 
 const requestAuth = async (path, options = {}) => {
-  const response = await fetch(`${authApiBaseUrl}${path}`, {
-    ...options,
-    credentials: "include",
-    headers: options.body
-      ? { "Content-Type": "application/json", ...options.headers }
-      : options.headers,
-  });
+  if (!authApiBaseUrl) {
+    throw new Error("Giriş servisi henüz yapılandırılmamış. Site yöneticisinin API adresini ayarlaması gerekiyor.");
+  }
+
+  let response;
+  try {
+    response = await fetch(`${authApiBaseUrl}${path}`, {
+      ...options,
+      credentials: "include",
+      headers: options.body
+        ? { "Content-Type": "application/json", ...options.headers }
+        : options.headers,
+    });
+  } catch {
+    throw new Error("Giriş sunucusuna bağlanılamadı. İnternet bağlantısını ve API adresini kontrol edin.");
+  }
 
   let data = {};
   try {
