@@ -290,6 +290,56 @@ const initCatalogTools = () => {
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
+  const siteHeader = document.querySelector(".site-header");
+  const categoryNav = siteHeader?.querySelector(":scope > nav");
+  if (siteHeader && categoryNav) {
+    const menuButton = document.createElement("button");
+    menuButton.className = "menu-toggle";
+    menuButton.type = "button";
+    menuButton.setAttribute("aria-label", "Kategorileri aç");
+    menuButton.setAttribute("aria-expanded", "false");
+    menuButton.setAttribute("aria-controls", "category-drawer");
+    menuButton.innerHTML = '<span></span><span></span><span></span>';
+
+    const drawer = document.createElement("aside");
+    drawer.className = "category-drawer";
+    drawer.id = "category-drawer";
+    drawer.setAttribute("aria-label", "Kategoriler");
+    drawer.setAttribute("aria-hidden", "true");
+    const drawerHeader = document.createElement("div");
+    drawerHeader.className = "category-drawer-header";
+    drawerHeader.innerHTML = '<strong>Kategoriler</strong><button type="button" class="category-drawer-close" aria-label="Menüyü kapat">×</button>';
+    const languagePicker = siteHeader.querySelector(":scope > .language-picker");
+    const drawerHeading = drawerHeader.querySelector("strong");
+    const drawerNav = categoryNav.cloneNode(true);
+    drawerNav.setAttribute("aria-label", "Kategoriler");
+    drawer.append(drawerHeader, drawerNav);
+    const backdrop = document.createElement("button");
+    backdrop.className = "category-backdrop";
+    backdrop.type = "button";
+    backdrop.setAttribute("aria-label", "Menüyü kapat");
+    document.body.append(backdrop, drawer);
+    siteHeader.insertBefore(menuButton, categoryNav);
+
+    if (languagePicker) drawerHeading.after(languagePicker);
+
+    const setMenuOpen = (open) => {
+      document.body.classList.toggle("category-menu-open", open);
+      menuButton.setAttribute("aria-expanded", String(open));
+      drawer.setAttribute("aria-hidden", String(!open));
+      if (open) drawer.querySelector(".category-drawer-close").focus();
+      else menuButton.focus();
+    };
+    menuButton.addEventListener("click", () => setMenuOpen(true));
+    drawer.querySelector(".category-drawer-close").addEventListener("click", () => setMenuOpen(false));
+    backdrop.addEventListener("click", () => setMenuOpen(false));
+    drawerNav.addEventListener("click", (event) => {
+      if (event.target.closest("a")) setMenuOpen(false);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && document.body.classList.contains("category-menu-open")) setMenuOpen(false);
+    });
+  }
   await loadCatalog();
   initCatalogTools();
   const navLinks = document.querySelectorAll(".site-header nav .nav-link");

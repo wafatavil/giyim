@@ -132,7 +132,7 @@
       try { localStorage.setItem("moda-language", language); } catch { /* Keep the language for this page session. */ }
     }
     const trigger = document.querySelector(".language-trigger");
-    if (trigger) trigger.textContent = `🌐 ${language.toUpperCase()}⌄`;
+    if (trigger) trigger.querySelector(".language-code").textContent = language.toUpperCase();
     document.querySelectorAll(".language-option").forEach((option) => {
       option.setAttribute("aria-selected", String(option.dataset.language === language));
       option.classList.toggle("is-selected", option.dataset.language === language);
@@ -152,7 +152,8 @@
     const trigger = document.createElement("button");
     trigger.className = "language-trigger";
     trigger.type = "button";
-    trigger.textContent = `🌐 ${language.toUpperCase()}⌄`;
+    trigger.innerHTML = '<span class="language-icon" aria-hidden="true">🌐</span><span class="language-code"></span><span class="language-chevron" aria-hidden="true">⌄</span>';
+    trigger.querySelector(".language-code").textContent = language.toUpperCase();
     trigger.setAttribute("aria-label", locales[language].title);
     trigger.setAttribute("aria-haspopup", "listbox");
     trigger.setAttribute("aria-expanded", "false");
