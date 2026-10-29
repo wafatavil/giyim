@@ -309,7 +309,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const drawerHeader = document.createElement("div");
     drawerHeader.className = "category-drawer-header";
     drawerHeader.innerHTML = '<strong>Kategoriler</strong><button type="button" class="category-drawer-close" aria-label="Menüyü kapat">×</button>';
-    const languagePicker = siteHeader.querySelector(":scope > .language-picker");
+    const languagePicker = siteHeader.querySelector(".header-actions > .language-picker");
     const drawerHeading = drawerHeader.querySelector("strong");
     const drawerNav = categoryNav.cloneNode(true);
     drawerNav.setAttribute("aria-label", "Kategoriler");
@@ -714,7 +714,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
-  const cartToggle = document.querySelector(".cart-toggle");
+  const cartToggle = document.querySelector(".cart-area .cart-toggle");
   const cartPanel = document.querySelector("#cart-panel");
   const cartItemsList = document.querySelector(".cart-items");
   const cartCount = document.querySelector(".cart-count");

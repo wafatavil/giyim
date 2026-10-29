@@ -534,6 +534,29 @@ app.get("/api/auth/me", requireAuth, (request, response) => {
   response.json({ user: publicUser(request.auth.user) });
 });
 
+app.patch("/api/auth/me", requireAuth, async (request, response) => {
+  const firstName = typeof request.body?.firstName === "string" ? request.body.firstName.trim() : "";
+  const lastName = typeof request.body?.lastName === "string" ? request.body.lastName.trim() : "";
+  if (!firstName || firstName.length > 80 || !lastName || lastName.length > 80) {
+    return response.status(400).json({ error: "Geçerli ad ve soyad girin." });
+  }
+
+  try {
+    const result = await pool.query(
+      `UPDATE users
+       SET first_name = $1, last_name = $2
+       WHERE id = $3
+       RETURNING id, email, first_name, last_name, role, email_verified`,
+      [firstName, lastName, request.auth.user.id]
+    );
+    if (result.rows.length === 0) return response.status(404).json({ error: "Hesap bulunamadı." });
+    response.json({ user: publicUser(result.rows[0]) });
+  } catch (error) {
+    console.error("Profil bilgileri güncellenemedi:", error);
+    response.status(500).json({ error: "Profil bilgileri güncellenemedi." });
+  }
+});
+
 app.post("/api/auth/logout", async (request, response) => {
   const token = readSessionToken(request);
   if (token && /^[A-Za-z0-9_-]{40,50}$/.test(token)) {
@@ -972,6 +995,35 @@ app.get("/api/cart", requireAuth, async (request, response) => {
   } catch (error) {
     console.error("Sepet okunamadı:", error);
     response.status(500).json({ error: "Sepet yüklenemedi." });
+  }
+});
+
+app.get("/api/orders", requireAuth, async (request, response) => {
+  try {
+    const result = await pool.query(
+      `SELECT o.id, o.status, o.subtotal, o.shipping_cost AS "shippingCost",
+              o.total, o.created_at AS "createdAt",
+              COALESCE(
+                jsonb_agg(jsonb_build_object(
+                  'productName', oi.product_name,
+                  'size', oi.size,
+                  'color', oi.color,
+                  'quantity', oi.quantity,
+                  'unitPrice', oi.unit_price
+                ) ORDER BY oi.id) FILTER (WHERE oi.id IS NOT NULL),
+                '[]'::jsonb
+              ) AS items
+       FROM orders o
+       LEFT JOIN order_items oi ON oi.order_id = o.id
+       WHERE o.user_id = $1
+       GROUP BY o.id
+       ORDER BY o.created_at DESC`,
+      [request.auth.user.id]
+    );
+    response.json({ orders: result.rows });
+  } catch (error) {
+    console.error("Siparişler yüklenemedi:", error);
+    response.status(500).json({ error: "Siparişler yüklenemedi." });
   }
 });
 

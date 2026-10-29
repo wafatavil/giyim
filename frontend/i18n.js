@@ -5,6 +5,7 @@
     ar: { label: "اللغة", title: "اختر اللغة", options: { tr: "🇹🇷 Türkçe", en: "🇬🇧 English", ar: "🇸🇦 العربية" } },
   };
   const strings = {
+    "Profilim": ["My Profile", "ملفي الشخصي"], "Hesap menüsü": ["Account menu", "قائمة الحساب"], "Hesap menüsünü aç": ["Open account menu", "افتح قائمة الحساب"], "Kişisel bilgiler": ["Personal details", "المعلومات الشخصية"], "Adını ve soyadını güncelleyebilirsin.": ["Update your first and last name.", "يمكنك تحديث اسمك ولقبك."], "HESABIN": ["YOUR ACCOUNT", "حسابك"], "Hesap bilgilerini, siparişlerini ve teslimat adreslerini buradan yönet.": ["Manage your account, orders, and delivery addresses here.", "أدر حسابك وطلباتك وعناوين التوصيل من هنا."], "Ad": ["First name", "الاسم الأول"], "Soyad": ["Last name", "اسم العائلة"], "E-posta": ["Email", "البريد الإلكتروني"], "E-posta doğrulandı": ["Email verified", "تم تأكيد البريد الإلكتروني"], "E-posta doğrulanmadı": ["Email not verified", "لم يتم تأكيد البريد الإلكتروني"], "Bilgileri kaydet": ["Save details", "احفظ المعلومات"], "Bilgiler kaydediliyor…": ["Saving details…", "جارٍ حفظ المعلومات…"], "Bilgilerin güncellendi ♥": ["Your details were updated ♥", "تم تحديث معلوماتك ♥"], "Profil bilgileri güncellenemedi.": ["Couldn't update profile details.", "تعذر تحديث معلومات الملف الشخصي."], "Geçerli ad ve soyad girin.": ["Enter a valid first and last name.", "أدخل اسماً أول واسم عائلة صالحين."], "Şifre yenileme bağlantısı al": ["Get a password reset link", "احصل على رابط لإعادة تعيين كلمة المرور"], "Siparişlerim": ["My Orders", "طلباتي"], "Sipariş geçmişini ve durumunu görüntüle.": ["View your order history and status.", "اطلع على سجل طلباتك وحالتها."], "Siparişler yükleniyor…": ["Loading orders…", "جارٍ تحميل الطلبات…"], "Henüz siparişin yok.": ["You don't have any orders yet.", "ليس لديك طلبات بعد."], "Siparişler yüklenemedi.": ["Couldn't load orders.", "تعذر تحميل الطلبات."], "Sipariş": ["Order", "الطلب"], "Adreslerim": ["My Addresses", "عناويني"], "Kayıtlı teslimat adreslerini görüntüle ve düzenle.": ["View and edit your saved delivery addresses.", "اعرض عناوين التوصيل المحفوظة وعدّلها."], "Adresler yükleniyor…": ["Loading addresses…", "جارٍ تحميل العناوين…"], "Henüz kayıtlı adresin yok.": ["You don't have any saved addresses yet.", "ليس لديك عناوين محفوظة بعد."], "Adreslerini görmek için e-posta adresini doğrula.": ["Verify your email to view your addresses.", "أكد بريدك الإلكتروني لعرض عناوينك."], "Adresleri yönet →": ["Manage addresses →", "إدارة العناوين →"], "pending": ["Pending", "قيد الانتظار"], "paid": ["Paid", "مدفوع"], "processing": ["Processing", "قيد التجهيز"], "shipped": ["Shipped", "تم الشحن"], "delivered": ["Delivered", "تم التوصيل"], "cancelled": ["Cancelled", "ملغي"], "refunded": ["Refunded", "مسترد"],
     "MODA ana sayfa": ["MODA home page", "الصفحة الرئيسية لمودا"], "Ana menü": ["Main menu", "القائمة الرئيسية"], "Ana Sayfa": ["Home", "الرئيسية"],
     "Yeni Gelenler": ["New Arrivals", "وصل حديثاً"], "Kız Çocuk": ["Girls", "ملابس البنات"], "Erkek Çocuk": ["Boys", "ملابس الأولاد"], "İndirim": ["Sale", "التخفيضات"],
     "Giriş Yap": ["Sign In", "تسجيل الدخول"], "Giriş yap": ["Sign in", "تسجيل الدخول"], "Giriş Yap | MODA": ["Sign In | MODA", "تسجيل الدخول | MODA"], "Merhaba,": ["Hello,", "مرحباً،"],
@@ -204,7 +205,10 @@
     });
     document.addEventListener("click", (event) => { if (!wrapper.contains(event.target)) toggleMenu(false); });
     wrapper.append(label, trigger, menu);
-    host.append(wrapper);
+    const target = host.classList.contains("site-header")
+      ? host.querySelector(".header-actions") || host
+      : host;
+    target.append(wrapper);
   };
   window.MODA_I18N = { get language() { return language; }, t: translate, setLanguage: update, money(value) { return new Intl.NumberFormat(language === "ar" ? "ar-SA" : language === "en" ? "en-GB" : "tr-TR", { style: "currency", currency: "TRY" }).format(Number(value) || 0); } };
   update(language, false);

@@ -217,15 +217,18 @@ const initAccountLink = async () => {
   if (!accountArea.isConnected) {
     accountArea.className = "account-area";
     const loginLink = document.createElement("a");
-    loginLink.className = "account-link";
+    loginLink.className = "cart-toggle account-icon-button";
     loginLink.href = "./giris.html";
+    loginLink.setAttribute("aria-label", "Giriş Yap");
+    loginLink.title = "Giriş Yap";
     loginLink.innerHTML = `
-      <span class="account-icon" aria-hidden="true">♥</span>
-      <span>Giriş Yap</span>
-      <span class="account-arrow" aria-hidden="true">→</span>
+      <svg class="account-profile-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="8" r="3.4"></circle>
+        <path d="M5.5 20c.8-3.4 3.1-5.2 6.5-5.2s5.7 1.8 6.5 5.2"></path>
+      </svg>
     `;
     accountArea.append(loginLink);
-    header.insertBefore(accountArea, cartArea);
+    cartArea.parentElement.insertBefore(accountArea, cartArea);
   }
 
   try {
@@ -233,17 +236,70 @@ const initAccountLink = async () => {
     if (!user) return;
 
     accountArea.replaceChildren();
-    const greeting = document.createElement("span");
-    greeting.className = "account-greeting";
-    const greetingPrefix = document.createElement("span");
-    greetingPrefix.textContent = "Merhaba,";
-    const greetingName = document.createElement("span");
-    greetingName.textContent = user.firstName;
-    greeting.append(greetingPrefix, " ", greetingName);
+    const displayName = [user.firstName, user.lastName].filter(Boolean).join(" ") || user.email;
+    const avatarInitial = (user.firstName || user.email || "?").trim().charAt(0)
+      .toLocaleUpperCase(document.documentElement.lang || "tr");
+    const accountButton = document.createElement("button");
+    accountButton.className = "cart-toggle account-icon-button account-avatar-button";
+    accountButton.type = "button";
+    accountButton.setAttribute("aria-label", "Hesap menüsünü aç");
+    accountButton.setAttribute("aria-haspopup", "menu");
+    accountButton.setAttribute("aria-expanded", "false");
+    accountButton.setAttribute("aria-controls", "account-popover");
+    accountButton.title = displayName;
+    const avatar = document.createElement("span");
+    avatar.className = "account-avatar-initial";
+    avatar.setAttribute("aria-hidden", "true");
+    avatar.textContent = avatarInitial;
+    accountButton.append(avatar);
+
+    const popover = document.createElement("div");
+    popover.className = "account-popover";
+    popover.id = "account-popover";
+    popover.setAttribute("role", "menu");
+    popover.setAttribute("aria-label", "Hesap menüsü");
+    popover.hidden = true;
+    const identity = document.createElement("div");
+    identity.className = "account-popover-identity";
+    const name = document.createElement("strong");
+    name.className = "account-popover-name";
+    name.textContent = displayName;
+    const email = document.createElement("span");
+    email.className = "account-popover-email";
+    email.textContent = user.email;
+    identity.append(name, email);
+
+    const profileLink = document.createElement("a");
+    profileLink.className = "account-popover-item";
+    profileLink.href = "./profilim.html";
+    profileLink.setAttribute("role", "menuitem");
+    profileLink.textContent = "Profilim";
     const logoutButton = document.createElement("button");
-    logoutButton.className = "account-logout";
+    logoutButton.className = "account-popover-item account-popover-logout";
     logoutButton.type = "button";
-    logoutButton.textContent = "Çıkış";
+    logoutButton.setAttribute("role", "menuitem");
+    logoutButton.textContent = "Çıkış yap";
+    popover.append(identity, profileLink, logoutButton);
+    accountArea.append(accountButton, popover);
+
+    const closePopover = () => {
+      popover.hidden = true;
+      accountButton.setAttribute("aria-expanded", "false");
+    };
+    accountButton.addEventListener("click", () => {
+      const open = popover.hidden;
+      popover.hidden = !open;
+      accountButton.setAttribute("aria-expanded", String(open));
+    });
+    document.addEventListener("click", (event) => {
+      if (!accountArea.contains(event.target)) closePopover();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !popover.hidden) {
+        closePopover();
+        accountButton.focus();
+      }
+    });
     logoutButton.addEventListener("click", async () => {
       logoutButton.disabled = true;
       try {
@@ -253,7 +309,6 @@ const initAccountLink = async () => {
         logoutButton.disabled = false;
       }
     });
-    accountArea.append(greeting, logoutButton);
   } catch {
     // Sunucu kapalıyken mağaza kullanılabilir; giriş bağlantısı görünür kalır.
   }

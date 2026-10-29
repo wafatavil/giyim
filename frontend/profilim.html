@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fff8f5">
+  <title>Profilim | MODA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body class="profile-page-shell">
+  <header class="auth-header profile-header">
+    <a class="brand" href="./index.html" aria-label="MODA ana sayfa"><i aria-hidden="true">♥</i><span>MODA</span></a>
+    <a class="auth-back-link" href="./index.html">← Mağazaya dön</a>
+  </header>
+
+  <main class="profile-page">
+    <div class="profile-page-heading">
+      <p class="address-eyebrow">HESABIN</p>
+      <h1>Profilim</h1>
+      <p>Hesap bilgilerini, siparişlerini ve teslimat adreslerini buradan yönet.</p>
+    </div>
+
+    <section class="profile-card profile-personal-card" aria-labelledby="personal-info-title">
+      <div class="profile-section-heading">
+        <span class="profile-section-icon" aria-hidden="true">♡</span>
+        <div><h2 id="personal-info-title">Kişisel bilgiler</h2><p>Adını ve soyadını güncelleyebilirsin.</p></div>
+      </div>
+      <form id="profile-form" class="profile-form">
+        <label class="profile-field"><span>Ad</span><input name="firstName" autocomplete="given-name" maxlength="80" required></label>
+        <label class="profile-field"><span>Soyad</span><input name="lastName" autocomplete="family-name" maxlength="80" required></label>
+        <label class="profile-field profile-field-wide"><span>E-posta</span><input id="profile-email" type="email" readonly aria-describedby="email-verification-status"></label>
+        <p id="email-verification-status" class="profile-email-status"></p>
+        <p id="profile-feedback" class="profile-feedback" role="status" aria-live="polite"></p>
+        <button class="address-submit profile-save-button" type="submit">Bilgileri kaydet</button>
+      </form>
+      <a class="profile-security-link" href="./sifremi-unuttum.html">Şifre yenileme bağlantısı al</a>
+    </section>
+
+    <div class="profile-sections-grid">
+      <section class="profile-card" aria-labelledby="profile-orders-title">
+        <div class="profile-section-heading">
+          <span class="profile-section-icon" aria-hidden="true">♡</span>
+          <div><h2 id="profile-orders-title">Siparişlerim</h2><p>Sipariş geçmişini ve durumunu görüntüle.</p></div>
+        </div>
+        <p id="profile-orders-feedback" class="profile-muted-message" role="status" aria-live="polite">Siparişler yükleniyor…</p>
+        <div id="profile-orders-list" class="profile-orders-list"></div>
+      </section>
+
+      <section class="profile-card" aria-labelledby="profile-addresses-title">
+        <div class="profile-section-heading">
+          <span class="profile-section-icon" aria-hidden="true">⌂</span>
+          <div><h2 id="profile-addresses-title">Adreslerim</h2><p>Kayıtlı teslimat adreslerini görüntüle ve düzenle.</p></div>
+        </div>
+        <p id="profile-addresses-feedback" class="profile-muted-message" role="status" aria-live="polite">Adresler yükleniyor…</p>
+        <ul id="profile-addresses-list" class="profile-addresses-list"></ul>
+        <a class="profile-action-link" href="./adres.html">Adresleri yönet →</a>
+      </section>
+    </div>
+  </main>
+
+  <script src="./config.js"></script>
+  <script src="./i18n.js"></script>
+  <script src="./auth.js"></script>
+  <script src="./profile.js"></script>
+</body>
+</html>
